@@ -1,5 +1,6 @@
 import glob
 import os
+import pickle
 from dataclasses import dataclass
 
 import conllu
@@ -8,12 +9,13 @@ from datasets import load_dataset
 from tqdm.auto import tqdm
 from transformers import HfArgumentParser
 
+from utils.denglisch_utils import Corpus
 from utils.wtpsplit_eval_utils import preprocess_sentence
 from utils.wtpsplit_utils import Constants
-from utils.denglisch_utils import Corpus
-import pickle
 
-UD_TREEBANK_PATH = "../data/ud-treebanks-v2.13"  # source: https://universaldependencies.org/#download
+UD_TREEBANK_PATH = (
+    "../data/ud-treebanks-v2.13"  # source: https://universaldependencies.org/#download
+)
 ERSATZ_DATA_PATH = "../data/ersatz-test-suite/segmented"  # source: https://github.com/rewicks/ersatz-test-suite
 
 # copied from Table 8 in https://aclanthology.org/2021.acl-long.309.pdf
@@ -45,6 +47,7 @@ ERSATZ_TEST_DATASETS = {
 
 DENGLISCH_PATH = "../data/denglisch/Manu_corpus.csv"
 DENGLISCH_PATH = "/home/is473/rds/hpc-work/4X1/multilingual-sentence-segmentation/data/denglisch/Manu_corpus.csv"
+
 
 @dataclass
 class Args:
@@ -80,18 +83,22 @@ if __name__ == "__main__":
             other_lang_code = other_lang_code.pop()
 
             dset_args = ["opus100", opus_dset_name]
-            
+
             try:
                 opus100_sentences = [
                     preprocess_sentence(sample[lang_code])
-                    for sample in load_dataset(*dset_args, split="test", cache_dir=args.cache_dir)["translation"]
+                    for sample in load_dataset(
+                        *dset_args, split="test", cache_dir=args.cache_dir
+                    )["translation"]
                     if sample[lang_code].strip() != sample[other_lang_code].strip()
                 ]
                 eval_data[lang_code]["opus100"] = opus100_sentences
             except:
                 opus100_sentences = [
                     preprocess_sentence(sample[lang_code])
-                    for sample in load_dataset(*dset_args, split="train", cache_dir=args.cache_dir)["translation"]
+                    for sample in load_dataset(
+                        *dset_args, split="train", cache_dir=args.cache_dir
+                    )["translation"]
                     if sample[lang_code].strip() != sample[other_lang_code].strip()
                 ]
                 eval_data[lang_code]["opus100"] = opus100_sentences
@@ -124,14 +131,15 @@ if __name__ == "__main__":
     for tokens, labels in tqdm(zip(all_tokens, all_labels)):
         sentence_tokens = []
         for token, label in zip(tokens, labels):
-            if token and token != "$newline$": sentence_tokens.append(token)
+            if token and token != "$newline$":
+                sentence_tokens.append(token)
             if label == "<EOS>" or label == "<EOP>":
                 sentence_text = preprocess_sentence(" ".join(sentence_tokens))
                 denglisch_sentences.append(sentence_text)
                 sentence_tokens = []
 
     print(len(denglisch_sentences))
-    
+
     eval_data["de"]["denglisch"] = denglisch_sentences
 
     with open(args.output_file, "wb") as f:

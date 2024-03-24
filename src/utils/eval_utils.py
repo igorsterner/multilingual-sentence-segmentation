@@ -1,19 +1,27 @@
+import re
 import subprocess
 import unicodedata
 
 import numpy as np
-import re
-from sklearn.metrics import (
-    f1_score,
-    precision_score,
-    recall_score,
+import spacy
+from sklearn.metrics import f1_score, precision_score, recall_score
+from tqdm import tqdm
+from transformers import pipeline
+from wtpsplit import WtP
+
+from utils.utils import Constants, lang_code_to_lang, reconstruct_sentences
+
+wtp = WtP("wtp-canine-s-12l-no-adapters")
+wtp.half().to("cuda")
+
+pipe = pipeline(
+    "token-classification",
+    model="igorsterner/xlm-roberta-base-Multilingual-Sentence-Segmentation-v4",
+    stride=5,
+    device=0,
 )
 
-from utils.wtpsplit_utils import (
-    Constants,
-    lang_code_to_lang,
-    reconstruct_sentences,
-)
+spacy_nlp = spacy.load("xx_sent_ud_sm")
 
 
 def preprocess_sentence(sentence):
@@ -45,6 +53,7 @@ def get_labels(lang_code, sentences, after_space=True):
 
 
 def evaluate_sentences(lang_code, sentences, predicted_sentences):
+
     separator = Constants.SEPARATORS[lang_code]
 
     text = separator.join(sentences)
@@ -61,6 +70,7 @@ def evaluate_sentences(lang_code, sentences, predicted_sentences):
         "recall": recall_score(labels, predictions),
         "precision": precision_score(labels, predictions),
     }
+
 
 ERSATZ_LANGUAGES = {
     "ar",
@@ -175,6 +185,11 @@ def spacy_sent_sentencize(lang_code, text):
         raise LanguageError(f"spacy_sent does not support {lang_code}")
 
 
+def spacy_multilingual_sentencize(text):
+
+    return reconstruct_sentences(text, list([str(s) for s in spacy_nlp(text).sents]))
+
+
 def spacy_dp_sentencize(lang_code, text):
     import spacy
 
@@ -209,3 +224,37 @@ def punkt_sentencize(lang_code, text):
         )
     except LookupError:
         raise LanguageError(f"punkt does not support {lang_code}")
+
+
+def xlmr_sentencize(text):
+
+    output = pipe(text)
+
+    pred_sentences = []
+    start = 0
+    for token in output:
+        sentence = text[start : token["end"]]
+        pred_sentences.append(sentence)
+        start = token["end"]
+
+    if start < len(text):
+        pred_sentences.append(text[start:])
+
+    return reconstruct_sentences(text, [str(s) for s in pred_sentences])
+
+
+def wtpsplit_sententize(text):
+
+    # from wtpsplit import WtP
+
+    # wtp = WtP("wtp-canine-s-12l-no-adapters")
+    # # optionally run on GPU for better performance
+    # # also supports TPUs via e.g. wtp.to("xla:0"), in that case pass `pad_last_batch=True` to wtp.split
+    # wtp.half().to("cuda")
+
+    # # returns ["Hello ", "This is a test."]
+    # wtp.split("Hello This is a test.")
+
+    pred_sentences = wtp.split(text)
+
+    return reconstruct_sentences(text, pred_sentences)

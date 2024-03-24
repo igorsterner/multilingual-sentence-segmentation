@@ -1,5 +1,6 @@
 import pandas
 
+
 class Corpus:
     COLUMN_NAMES = ["source", "user_name", "sen_id", "sen_num", "token", "categ"]
 
@@ -12,7 +13,9 @@ class Corpus:
         if isinstance(source, type(self)):
             self._data = source._data.copy()
         else:
-            self._data = pandas.read_csv(source, header=0, names=self.COLUMN_NAMES, dtype=str, na_filter=False)
+            self._data = pandas.read_csv(
+                source, header=0, names=self.COLUMN_NAMES, dtype=str, na_filter=False
+            )
 
     def copy(self):
         """Returns deep copy of self."""

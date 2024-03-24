@@ -5,3 +5,7 @@ transformers[torch]
 conllu
 datasets
 wandb
+nltk
+iso639-lang
+spacy
+pysbd

@@ -1,9 +1,9 @@
 import glob
 import os
+import pickle
+import random
 from dataclasses import dataclass
 
-import random
-import pickle
 import conllu
 import numpy as np
 from tqdm.auto import tqdm
@@ -12,7 +12,9 @@ from transformers import HfArgumentParser
 from utils.wtpsplit_eval_utils import preprocess_sentence
 from utils.wtpsplit_utils import Constants
 
-UD_TREEBANK_PATH = "../data/ud-treebanks-v2.13"  # source: https://universaldependencies.org/#download
+UD_TREEBANK_PATH = (
+    "../data/ud-treebanks-v2.13"  # source: https://universaldependencies.org/#download
+)
 
 langs = Constants.LANGINFO.index
 
@@ -66,7 +68,7 @@ if __name__ == "__main__":
                 )
             except:
                 ud_train_sentences = []
-                
+
             ud_train_sentences = [
                 preprocess_sentence(sentence.metadata["text"])
                 for sentence in ud_train_data
@@ -176,5 +178,7 @@ if __name__ == "__main__":
 
     all_data = {"train": all_training_data, "dev": all_dev_data}
 
-    with open(os.path.join(args.output_dir, "augmented_ud_training_data.pkl"), 'wb') as f:
+    with open(
+        os.path.join(args.output_dir, "augmented_ud_training_data.pkl"), "wb"
+    ) as f:
         pickle.dump(all_data, f)

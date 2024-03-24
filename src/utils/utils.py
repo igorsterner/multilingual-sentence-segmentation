@@ -2,12 +2,12 @@ import json
 import os
 import random
 from dataclasses import dataclass, field
-from cached_property import cached_property
 from pathlib import Path
 from typing import List
 
 import numpy as np
 import pandas as pd
+from cached_property import cached_property
 
 # same as in CANINE
 PRIMES = [31, 43, 59, 61, 73, 97, 103, 113, 137, 149, 157, 173, 181, 193, 211, 223]
@@ -30,7 +30,10 @@ class ConstantsClass:
 
     @cached_property
     def LANGINFO(self):
-        return pd.read_csv("../data/language_info.csv", index_col=0)
+        return pd.read_csv(
+            "/home/is473/rds/hpc-work/4X1/multilingual-sentence-segmentation/data/language_info.csv",
+            index_col=0,
+        )
 
     # @cached_property
     # def PUNCTUATION_CHARS(self):
@@ -46,7 +49,10 @@ class ConstantsClass:
 
     @cached_property
     def SEPARATORS(self):
-        return {lang: ("" if row["no_whitespace"] else " ") for lang, row in Constants.LANGINFO.iterrows()}
+        return {
+            lang: ("" if row["no_whitespace"] else " ")
+            for lang, row in Constants.LANGINFO.iterrows()
+        }
 
 
 Constants = ConstantsClass()
@@ -60,7 +66,9 @@ class LabelArgs:
     newline_whitespace_prob: float = 0.99
     hyphen_smooth_prob: float = 0.9
     newline_chars: List[str] = field(default_factory=lambda: ["\n"])
-    auxiliary_chars: List[str] = field(default_factory=lambda: Constants.PUNCTUATION_CHARS.copy())
+    auxiliary_chars: List[str] = field(
+        default_factory=lambda: Constants.PUNCTUATION_CHARS.copy()
+    )
     hyphen_chars: List[str] = field(default_factory=lambda: ["-", "‐"])
     use_auxiliary: bool = False
 
@@ -78,7 +86,7 @@ def get_label_dict(label_args):
 
 
 def sigmoid(x):
-    return 1 / (1 + np.exp(-x.astype(np.float32))) # fp32 for better precision
+    return 1 / (1 + np.exp(-x.astype(np.float32)))  # fp32 for better precision
 
 
 def encode(text):
@@ -115,6 +123,7 @@ def lang_code_to_lang(lang_code):
         return languages.get(alpha2=lang_code).name
     except KeyError:
         return languages.get(part3=lang_code).name
+
 
 # # does the steps in Figure 2 of the paper
 # def corrupt(

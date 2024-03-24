@@ -1,11 +1,12 @@
 import json
+import pickle
 from dataclasses import dataclass
 from typing import List
 
 from tqdm import tqdm
 from transformers import HfArgumentParser
 
-from utils.wtpsplit_eval_utils import (
+from utils.eval_utils import (
     LanguageError,
     ersatz_sentencize,
     evaluate_sentences,
@@ -14,13 +15,19 @@ from utils.wtpsplit_eval_utils import (
     pysbd_sentencize,
     spacy_dp_sentencize,
     spacy_sent_sentencize,
+    xlmr_sentencize,
+    wtpsplit_sententize,
+    spacy_multilingual_sentencize,
 )
-from utils.wtpsplit_utils import Constants
-import pickle
+from utils.utils import Constants
+
 
 @dataclass
 class Args:
     eval_data_path: str = "../data/all_eval_data.pkl"
+    eval_data_path: str = (
+        "/home/is473/rds/hpc-work/4X1/multilingual-sentence-segmentation/data/all_eval_data.pkl"
+    )
     results_path: str = "../data/results.json"
     include_langs: List[str] = None
 
@@ -39,23 +46,31 @@ if __name__ == "__main__":
         results[lang_code] = {}
 
         for dataset_name, sentences in lang_data.items():
+
+            # if dataset_name != "denglisch":
+            #     continue
+
+            sentences = [s for s in sentences if s]
+            sentences = [preprocess_sentence(s) for s in sentences]
+            text = Constants.SEPARATORS[lang_code].join(sentences)
+
             results[lang_code][dataset_name] = {}
 
-            clean_sentences = [preprocess_sentence(s) for s in sentences]
-
-            text = Constants.SEPARATORS[lang_code].join(clean_sentences)
-
             for f, name in [
-                (punkt_sentencize, "punkt"),
+                # (punkt_sentencize, "punkt"),
                 # (spacy_dp_sentencize, "spacy_dp"),
                 # (spacy_sent_sentencize, "spacy_sent"),
                 # (pysbd_sentencize, "pysbd"),
+                (xlmr_sentencize, "xlmr"),
+                (wtpsplit_sententize, "wtpsplit"),
+                (spacy_multilingual_sentencize, "spacy_multilingual"),
                 # (ersatz_sentencize, "ersatz"),
             ]:
-                print(f"Running {name} on {dataset_name} in {lang_code}...")
+
+                # print(f"Running {name} on {dataset_name} in {lang_code}...")
                 try:
                     results[lang_code][dataset_name][name] = evaluate_sentences(
-                        lang_code, sentences, f(lang_code, text)
+                        lang_code, sentences, f(text)
                     )
                 except LanguageError:
                     results[lang_code][dataset_name][name] = None
