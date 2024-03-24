@@ -10,8 +10,8 @@ from tqdm.auto import tqdm
 from transformers import HfArgumentParser
 
 from utils.denglisch_utils import Corpus
-from utils.wtpsplit_eval_utils import preprocess_sentence
-from utils.wtpsplit_utils import Constants
+from utils.eval_utils import preprocess_sentence
+from utils.utils import Constants
 
 UD_TREEBANK_PATH = (
     "../data/ud-treebanks-v2.13"  # source: https://universaldependencies.org/#download

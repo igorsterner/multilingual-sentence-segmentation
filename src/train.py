@@ -1,12 +1,3 @@
-"""Original file is located at
-    https://colab.research.google.com/drive/1eqYurteJGqwqf6WZT8OARS6xfQ-sQiO3
-"""
-
-"""Then you need to install Git-LFS. Uncomment the following instructions:"""
-
-"""Make sure your version of Transformers is at least 4.11.0 since the functionality was introduced in that version:"""
-
-
 import pickle
 from pathlib import Path
 
@@ -24,10 +15,8 @@ from transformers import (
 
 import wandb
 
-print(transformers.__version__)
 
 model_checkpoint = "xlm-roberta-base"
-batch_size = 32
 
 label2id = {
     "O": 0,
@@ -55,11 +44,6 @@ with open(ud_data_path, "rb") as f:
 
 train_sentences = ud_data["train"]
 dev_sentences = ud_data["dev"]
-
-print(len(dev_sentences))
-print(len(train_sentences))
-
-print(len(set(train_sentences).intersection(set(dev_sentences))))
 
 max_seq_length = 510
 
@@ -113,18 +97,14 @@ dev_dataset = Dataset.from_dict(
     {"input_ids": packed_dev_sentences, "labels": packed_dev_labels}
 )
 
-print("Packed train dataset size:", len(train_dataset))
-print("Packed test dataset size:", len(dev_dataset))
-
-
 model = AutoModelForTokenClassification.from_pretrained(
     model_checkpoint, num_labels=len(label2id), id2label=id2label, label2id=label2id
 )
 
 model_name = model_checkpoint.split("/")[-1]
-experiment_name = f"{model_name}-Multilingual-Sentence-Segmentation-v4"
+experiment_name = f"{model_name}-multilingual-sentence-segmentation"
 
-run = wandb.init(project="Sentence segmentation", entity="igorsterner")
+run = wandb.init(project="Sentence segmentation", entity="")
 wandb.run.name = experiment_name
 
 args = TrainingArguments(
@@ -134,8 +114,8 @@ args = TrainingArguments(
     eval_steps=100,
     report_to="wandb",
     learning_rate=2e-5,
-    per_device_train_batch_size=batch_size,
-    per_device_eval_batch_size=batch_size,
+    per_device_train_batch_size=32,
+    per_device_eval_batch_size=32,
     num_train_epochs=5,
     weight_decay=0.01,
     push_to_hub=True,

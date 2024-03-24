@@ -1,6 +1,4 @@
-import json
 import os
-import random
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List
@@ -21,27 +19,12 @@ class ConstantsClass:
     def ROOT_DIR(self):
         return Path(os.path.abspath(os.path.join(os.path.dirname(__file__))))
 
-    # @cached_property
-    # def CACHE_DIR(self):
-    #     CACHE_DIR = self.ROOT_DIR / ".cache"
-    #     CACHE_DIR.mkdir(exist_ok=True)
-
-    #     return CACHE_DIR
-
     @cached_property
     def LANGINFO(self):
         return pd.read_csv(
-            "/home/is473/rds/hpc-work/4X1/multilingual-sentence-segmentation/data/language_info.csv",
+            "../data/language_info.csv",
             index_col=0,
         )
-
-    # @cached_property
-    # def PUNCTUATION_CHARS(self):
-    #     return [x.strip() for x in open(os.path.join(self.ROOT_DIR, "data", "punctuation.txt")).readlines()]
-
-    # @cached_property
-    # def PUNCTUATION_MAP(self):
-    #     return json.load(open(os.path.join(self.ROOT_DIR, "data", "punctuation.json")))
 
     @cached_property
     def LANG_CODE_TO_INDEX(self):
@@ -123,66 +106,6 @@ def lang_code_to_lang(lang_code):
         return languages.get(alpha2=lang_code).name
     except KeyError:
         return languages.get(part3=lang_code).name
-
-
-# # does the steps in Figure 2 of the paper
-# def corrupt(
-#     input_ids,
-#     block_ids,
-#     lang,
-#     label_args,
-#     label_dict,
-#     pack_samples=False,
-#     min_length=None,
-# ):
-#     input_ids = input_ids.copy()
-#     block_ids = block_ids.copy()
-#     labels = label(input_ids, label_dict)
-
-#     separator = Constants.SEPARATORS[lang]
-
-#     try:
-#         i = next(index for index, label in enumerate(labels) if label != 0)
-#     except StopIteration:
-#         return input_ids, block_ids, labels
-
-#     while True:
-#         if min_length is not None and len(input_ids) <= min_length:
-#             break
-
-#         if labels[i] == Constants.NEWLINE_INDEX + 1:
-#             if random.random() < label_args.newline_remove_prob:
-#                 if separator == " " and random.random() < label_args.newline_whitespace_prob:
-#                     input_ids[i + 1] = ord(" ")
-#                 else:
-#                     del input_ids[i + 1]
-#                     del labels[i + 1]
-
-#                     if pack_samples:
-#                         last_index_in_block = i
-#                         while last_index_in_block + 1 == len(block_ids) or (
-#                             last_index_in_block < len(block_ids) and block_ids[last_index_in_block + 1] == block_ids[i]
-#                         ):
-#                             last_index_in_block += 1
-#                         input_ids.insert(last_index_in_block, 0)
-#                         labels.insert(last_index_in_block, 0)
-#                     else:
-#                         del block_ids[i + 1]
-#         elif label_args.use_auxiliary and labels[i] > Constants.AUX_OFFSET:  # auxiliary
-#             if pack_samples:
-#                 raise NotImplementedError()
-
-#             if random.random() < label_args.auxiliary_remove_prob:
-#                 del input_ids[i + 1]
-#                 del labels[i + 1]
-#                 del block_ids[i + 1]
-
-#         try:
-#             i = i + 1 + next(index for index, label in enumerate(labels[i + 1 :]) if label != 0)
-#         except StopIteration:
-#             break
-
-#     return input_ids, block_ids, labels
 
 
 def indices_to_sentences(text, indices, strip_whitespace=False):
