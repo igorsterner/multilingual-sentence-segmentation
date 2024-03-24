@@ -2,7 +2,7 @@
 
 ## Why?
 
-Sentence segmentation is an early step in many NLP pipelines. But segmnter vary in performance massively across (1) language and (2) domain (e.g. formal vs. social media text). 
+Sentence segmentation is an early step in many NLP pipelines. But segmenters vary in performance massively across (1) language and (2) domain (e.g. formal vs. social media text). 
 
 This is a multilingual model designed to sentence segment text of many different languages. It is not language or domain specific. This model is particularly good at segmenting poorly punctuated text, such as text from social media.
 
@@ -34,7 +34,7 @@ pipe = pipeline(
 ) 
 ```
 
-If your text is longer than the context window, add stride=5! For single-GPU speedups, add device=0.
+If your text is longer than the context window, add stride=5. For single-GPU speedups, add device=0.
 
 Segment and process:
 
@@ -57,7 +57,7 @@ if start < len(text):
 
 All results here are percentage F1
 
-## Opus100 [1]
+## Opus100 [2]
 
 Who wins most? XLM-RoBERTa: 56, WtPSplit: 12, Spacy (multilingual): 8
 
@@ -69,7 +69,7 @@ Who wins most? XLM-RoBERTa: 56, WtPSplit: 12, Spacy (multilingual): 8
 | XLM-RoBERTa (ours)   | **83.97** | 41.59     | **81.56** | **81.30** | **85.68** | **94.34** | **84.10** | **91.80** | **91.23** | **78.72** | **92.64** | **86.73** | **93.87** | **94.50** | **94.57** | **93.18** | **90.19** | **90.28** | **74.79** | **94.06** | **90.46** | **81.76** | **84.33** | **85.62** | **92.55** | 67.26     | 86.61     | 91.22     | **72.69** | **94.53** | **89.83** | **92.24** | 93.78     | **89.27** | 41.43     | 78.39     | **89.15** | 36.60     | **70.51** | **82.77** | 58.14     | **89.41** | **89.99** | **88.25** | 86.82     | 92.81     | **86.14** | **94.73** | **93.25** | **92.44** | 49.39     | 66.02     | 93.60     | **69.22** | **93.51** | 61.86     | **92.84** | **93.19** | **89.47** | **86.24** | **92.95** | **93.46** | 91.79     | 94.16     | **93.93** | **72.74** | **81.77** | **74.49** | 93.17     | **92.15** | **62.92** | 75.65     | **93.41** | **84.89** | 56.85     | **77.07** |
 
 
-## Universal Dependencies [2]
+## Universal Dependencies [3]
 
 Who wins most? XLM-RoBERTa: 24, WtPSplit: 17 Spacy (multilingual): 13
 
@@ -80,7 +80,7 @@ Who wins most? XLM-RoBERTa: 24, WtPSplit: 17 Spacy (multilingual): 13
 | WtPSplit             | 98.27     | **83.00** | 89.28     | **98.16** | **99.12** | 98.52     | 92.98     | **99.26** | 94.56     | 96.13     | **96.94** | 94.73     | 97.60     | 94.09     | 97.24     | 97.29     | 94.69     | **96.71** | 86.60     | 72.17     | **98.87** | 95.79     | 96.78     | 96.08     | **96.80** | **98.41** | 86.39     | 95.45     | **95.84** | **98.18** | 96.28     | 99.11     | 91.43     | **97.67** | 96.42     | 91.84     | 93.61     | 95.92     | **96.13** | 81.50     | 86.28     | 95.57     | 96.85     | 99.17      | **98.45** | **95.86** | **97.54** | 70.26     | 96.00     | 92.08     | 93.79     | 92.97     | **97.25** |
 | XLM-RoBERTa (ours)   | 96.81     | 78.99     | **91.60** | 97.89     | **99.12** | 95.99     | **96.05** | 97.17     | **96.62** | **96.29** | 94.33     | **94.76** | 95.73     | **96.20** | **97.37** | 97.49     | **96.34** | 95.70     | 89.78     | **84.20** | 95.72     | **95.95** | **97.51** | 96.24     | 95.62     | 97.22     | 92.93     | **96.88** | 94.23     | 96.29     | **98.40** | 97.46     | **96.35** | 95.82     | 96.91     | **95.92** | **96.27** | **97.24** | 95.83     | 94.63     | **91.59** | **95.88** | 96.43     | 98.36      | 96.83     | 94.95     | 95.93     | **89.26** | 96.52     | **94.59** | **96.20** | **97.31** | 95.12     |
 
-## Ersatz [3]
+## Ersatz [4]
 
 Who wins most? XLM-RoBERTa: 10, WtPSplit: 8, Spacy (multilingual): 4
 
@@ -91,7 +91,7 @@ Who wins most? XLM-RoBERTa: 10, WtPSplit: 8, Spacy (multilingual): 4
 | WtPSplit             | 89.45     | 93.41     | 95.93     | **97.16** | **98.74** | 95.84     | 97.10     | **97.61** | 90.62     | 94.87     | **82.14** | 95.94     | **82.89** | **96.74** | 97.22     | 95.16     | 86.99     | **97.55** | **97.82** | 94.76     | 93.53     | 89.02     |
 | XLM-RoBERTa (ours)   | 79.78     | **96.94** | **97.02** | 96.10     | 97.06     | 96.80     | **97.67** | 96.33     | **93.73** | **95.34** | 77.54     | **97.28** | 78.94     | 96.13     | 96.45     | **96.71** | 92.33     | 96.24     | 97.15     | **95.94** | **95.76** | **90.11** |
 
-## German--English code-switching [4]
+## German--English code-switching [5]
 
 |                      | de        |
 |:---------------------|:----------|
@@ -99,10 +99,15 @@ Who wins most? XLM-RoBERTa: 10, WtPSplit: 8, Spacy (multilingual): 4
 | WtPSplit             | 77.41     |
 | XLM-RoBERTa (ours)   | **85.78** |
 
-[1] [Improving Massively Multilingual Neural Machine Translation and Zero-Shot Translation](https://aclanthology.org/2020.acl-main.148) (Zhang et al., ACL 2020)
-[2] [Universal Dependencies](https://aclanthology.org/2021.cl-2.11) (de Marneffe et al., CL 2021)
-[3] [A unified approach to sentence segmentation of punctuated text in many languages](https://aclanthology.org/2021.acl-long.309) (Wicks & Post, ACL-IJCNLP 2021)
-[4] [The Denglisch Corpus of German-English Code-Switching](https://aclanthology.org/2023.sigtyp-1.5) (Osmelak & Wintner, SIGTYP 2023)
+[1] [Where’s the Point? Self-Supervised Multilingual Punctuation-Agnostic Sentence Segmentation](https://aclanthology.org/2023.acl-long.398) (Minixhofer et al., ACL 2023)
+
+[2] [Improving Massively Multilingual Neural Machine Translation and Zero-Shot Translation](https://aclanthology.org/2020.acl-main.148) (Zhang et al., ACL 2020)
+
+[3] [Universal Dependencies](https://aclanthology.org/2021.cl-2.11) (de Marneffe et al., CL 2021)
+
+[4] [A unified approach to sentence segmentation of punctuated text in many languages](https://aclanthology.org/2021.acl-long.309) (Wicks & Post, ACL-IJCNLP 2021)
+
+[5] [The Denglisch Corpus of German-English Code-Switching](https://aclanthology.org/2023.sigtyp-1.5) (Osmelak & Wintner, SIGTYP 2023)
 
 
 # Replication
