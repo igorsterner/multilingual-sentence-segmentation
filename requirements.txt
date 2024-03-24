@@ -1,0 +1,7 @@
+pandas
+scikit-learn
+cached_property
+transformers[torch]
+conllu
+datasets
+wandb
