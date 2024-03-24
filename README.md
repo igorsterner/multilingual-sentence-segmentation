@@ -23,7 +23,7 @@ Most the code in this repo has been adapted from https://github.com/bminixhofer/
 
 # Usage
 
-The simplest way to use the system is with a Huggingface pipeline
+The simplest way to use the system is with a Huggingface pipeline. You can try out our model here: https://huggingface.co/igorsterner/xlmr-multilingual-sentence-segmentation
 
 ```
 from transformers import pipeline
