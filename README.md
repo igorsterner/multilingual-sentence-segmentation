@@ -9,17 +9,17 @@ This is a multilingual model designed to sentence segment text of many different
 ## How?
 
 1. Start with sentence segmented training corpora in many difference languages (from Universal Dependencies)
-2. Corrupt the training corpus with heuristics: lowercase the first letter, remove trailing punctuation, repeat trailing punctuation
-3. Finetune a multilingual language model to classify each token as the end of a sentence, or not.
+2. Corrupt the training corpus with heuristics: lowercase the first letter, remove trailing punctuation, repeat trailing punctuation (see src/extract_augmented_ud_training_data.py for the heuristics we used)
+3. Finetune a multilingual language model to classify each token as the end of a sentence, or not
 4. Evaluate on sentence segmentation from a range of sources of varying domains (e.g. code-switching data, mt data, ud data (without corruption this time, of course))
 
 ## Is it any good?
 
-Results are given below! We compare against the largest WtP Split model (`wtp-canine-s-12l-no-adapters`) and multilingual segmentation from spacy (`xx_sent_ud_sm`). We are very often better.
+Results are given below! We compare against the largest WtP Split model (`wtp-canine-s-12l-no-adapters`) and multilingual segmentation from spacy (`xx_sent_ud_sm`). We are very often better. None of the models is told what language the text is.
 
 ## Credit
 
-Most the code in this repo has been adapted from https://github.com/bminixhofer/wtpsplit, especially the data extraction. Full credit is given to those authors!
+Most the code in this repo has been adapted from https://github.com/bminixhofer/wtpsplit, especially the data extraction. Full credit is given to Benjamin Minixhofer, Jonas Pfeiffer and Ivan Vulić for that work!
 
 # Usage
 
