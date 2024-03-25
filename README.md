@@ -19,7 +19,7 @@ Results are given below! We compare against the largest WtP Split model (`wtp-ca
 
 ## Credit
 
-Most the code in this repo has been adapted from https://github.com/bminixhofer/wtpsplit, especially the data extraction. Full credit is given to Benjamin Minixhofer, Jonas Pfeiffer and Ivan Vulić for that work!
+Most the code in this repo has been adapted from https://github.com/bminixhofer/wtpsplit [1], especially the data extraction. Full credit is given to Benjamin Minixhofer, Jonas Pfeiffer and Ivan Vulić for that work!
 
 # Usage
 
